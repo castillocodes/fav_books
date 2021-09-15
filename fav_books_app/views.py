@@ -67,3 +67,10 @@ def create_book(request):
         user.favorited_books.add(book)
 
         return redirect(f'/books/{book.id}')
+
+def show_one(request, book_id):
+    context = {
+        'book': Book.objects.get(id=book_id),
+        'current_user': User.objects.get(id=request.session['user_id'])
+    }
+    return render(request, "show_one.html", context)

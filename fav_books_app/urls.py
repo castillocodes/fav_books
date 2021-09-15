@@ -7,4 +7,5 @@ urlpatterns = [
     path('login', views.login),
     path('books', views.show_all),
     path("books/create", views.create_book),
+    path("books/<int:book_id>", views.show_one),
 ]
