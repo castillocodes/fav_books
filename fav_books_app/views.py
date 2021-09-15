@@ -19,7 +19,7 @@ def register(request):
             first_name = request.POST['first_name'],
             last_name = request.POST['last_name'],
             email = request.POST['email'],
-            password = bcrypt.haspw(request.POST['password'].encode(), bcrypt.gensalt()).decode()
+            password = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt()).decode()
         )
         request.session['user_id'] = user.id
         request.session['greeting'] = user.first_name
@@ -37,3 +37,33 @@ def login(request):
         request.session['user_id'] = user.id
         request.session['greeting'] = user.first_name
         return redirect('/books')
+
+def show_all(request):
+    # check to see if the user loggedin or registered by checking their session
+    if "user_id" not in request.session:
+        return redirect('/')
+    else:
+        context = {
+            'all_books': Book.objects.all(),
+            'this_user': User.objects.get(id=request.session['user_id'])
+        }
+        return render(request, 'show_all.html', context)
+
+def create_book(request):
+    errors = Book.objects.book_validator(request.POST)
+
+    if len(errors):
+        for key, value in errors.items():
+            messages.error(request, value)
+        return redirect('/books')
+    else:
+        user = User.objects.get(id=request.session["user_id"])
+        book = Book.objects.create(
+            title = request.POST['title'],
+            description = request.POST['description'],
+            creator = user
+        )
+        # bonus: the book creator automatically favorites the book
+        user.favorited_books.add(book)
+
+        return redirect(f'/books/{book.id}')
