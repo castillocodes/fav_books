@@ -90,14 +90,14 @@ def delete(request, book_id):
 
 def favorite(request, book_id):
     user = User.objects.get(id=request.session["user_id"])
-    book = User.objects.get(id=book_id)
+    book = Book.objects.get(id=book_id)
     user.favorited_books.add(book)
 
     return redirect(f'/books/{book_id}')
 
 def unfavorite(request, book_id):
     user = User.objects.get(id=request.session["user_id"])
-    book = User.objects.get(id=book_id)
+    book = Book.objects.get(id=book_id)
     user.favorited_books.remove(book)
 
     return redirect(f'/books/{book_id}')
