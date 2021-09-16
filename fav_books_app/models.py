@@ -44,6 +44,9 @@ class User(models.Model):
 
     objects = UserManager()
 
+    def __str__(self):
+        return self.first_name + ' ' + self.last_name
+
 class BookManager(models.Manager):
     def book_validator(self, postData):
         errors = {}
@@ -62,3 +65,6 @@ class Book(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     objects = BookManager()
+
+    def __str__(self):
+        return self.title
